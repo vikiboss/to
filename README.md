@@ -1,4 +1,4 @@
-# catchit
+# @vikiboss/to
 
 一个优雅的 TypeScript 错误处理工具库。
 
@@ -12,16 +12,16 @@
 ## 安装
 
 ```bash
-npm install catchit
+npm install @vikiboss/to
 ```
 
 ## 使用方法
 
 ```typescript
-import { tryCatch } from 'catchit';
+import { to } from '@vikiboss/to';
 
 // 同步使用
-const [ok, error, value] = tryCatch(() => {
+const [ok, error, value] = to(() => {
   return "hello world";
 });
 
@@ -32,7 +32,7 @@ if (ok) {
 }
 
 // 异步使用
-const [ok, error, value] = await tryCatch(async () => {
+const [ok, error, value] = await to(async () => {
   const response = await fetch('https://api.example.com');
   return response.json();
 });
@@ -46,11 +46,23 @@ if (ok) {
 
 ## API
 
-### tryCatch
+### `to`
 
 ```typescript
-function tryCatch<T>(fn: () => Promise<T>): Promise<TryRunResult<T>>
-function tryCatch<T>(fn: () => T): TryRunResult<T>
+type TryRunResult<T> =
+  | readonly [ok: true, error: undefined, value: T]
+  | readonly [ok: false, error: unknown, value: undefined]
+
+/**
+ * Safely executes a synchronous or asynchronous function, returning a result tuple.
+ *
+ * @param fn The function to execute, which can be synchronous or return a Promise
+ * @returns For synchronous functions: a result tuple
+ * @returns For async functions: a Promise that resolves to a result tuple
+ */
+export function to<T>(fn: () => never): TryRunResult<never>
+export function to<T>(fn: () => Promise<T>): Promise<TryRunResult<T>>
+export function to<T>(fn: () => T): TryRunResult<T>
 ```
 
 返回一个元组，包含三个值：

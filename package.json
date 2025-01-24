@@ -1,5 +1,5 @@
 {
-  "name": "catchit",
+  "name": "@vikiboss/to",
   "version": "1.0.0",
   "description": "A TypeScript utility for elegant error handling",
   "main": "dist/index.js",
@@ -12,6 +12,7 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest",
+    "test:ci": "vitest",
     "test:coverage": "vitest run --coverage"
   },
   "keywords": [

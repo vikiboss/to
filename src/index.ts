@@ -9,10 +9,10 @@ type TryRunResult<T> =
  * @returns For synchronous functions: a result tuple
  * @returns For async functions: a Promise that resolves to a result tuple
  */
-export function catchit<T>(fn: () => never): TryRunResult<never>
-export function catchit<T>(fn: () => Promise<T>): Promise<TryRunResult<T>>
-export function catchit<T>(fn: () => T): TryRunResult<T>
-export function catchit<T>(fn: () => T | Promise<T>): TryRunResult<T> | Promise<TryRunResult<T>> {
+export function to<T>(fn: () => never): TryRunResult<never>
+export function to<T>(fn: () => Promise<T>): Promise<TryRunResult<T>>
+export function to<T>(fn: () => T): TryRunResult<T>
+export function to<T>(fn: () => T | Promise<T>): TryRunResult<T> | Promise<TryRunResult<T>> {
   try {
     const result = fn()
 

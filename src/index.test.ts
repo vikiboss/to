@@ -1,18 +1,18 @@
 import { describe, it, expect } from 'vitest'
-import { catchit } from './index'
+import { to } from './index'
 
-describe('catchit', () => {
+describe('to', () => {
   // 基础同步场景
   describe('synchronous operations', () => {
     it('should handle successful sync operations with return value', () => {
-      const [ok, error, value] = catchit(() => 'hello')
+      const [ok, error, value] = to(() => 'hello')
       expect(ok).toBe(true)
       expect(error).toBeUndefined()
       expect(value).toBe('hello')
     })
 
     it('should handle successful sync operations returning undefined', () => {
-      const [ok, error, value] = catchit(() => undefined)
+      const [ok, error, value] = to(() => undefined)
       expect(ok).toBe(true)
       expect(error).toBeUndefined()
       expect(value).toBeUndefined()
@@ -21,7 +21,7 @@ describe('catchit', () => {
     it('should handle sync operations throwing Error', () => {
       const testError = new Error('sync error')
 
-      const [ok, error, value] = catchit(() => {
+      const [ok, error, value] = to(() => {
         throw testError
       })
 
@@ -34,7 +34,7 @@ describe('catchit', () => {
       const testValues = [null, 'error', 404, { code: 500 }]
 
       testValues.forEach(testValue => {
-        const [ok, error, value] = catchit(() => {
+        const [ok, error, value] = to(() => {
           throw testValue
         })
 
@@ -48,14 +48,14 @@ describe('catchit', () => {
   // 异步场景
   describe('asynchronous operations', () => {
     it('should handle resolved Promise with value', async () => {
-      const [ok, error, value] = await catchit(() => Promise.resolve(42))
+      const [ok, error, value] = await to(() => Promise.resolve(42))
       expect(ok).toBe(true)
       expect(error).toBeUndefined()
       expect(value).toBe(42)
     })
 
     it('should handle resolved Promise with undefined', async () => {
-      const [ok, error, value] = await catchit(() => Promise.resolve(undefined))
+      const [ok, error, value] = await to(() => Promise.resolve(undefined))
       expect(ok).toBe(true)
       expect(error).toBeUndefined()
       expect(value).toBeUndefined()
@@ -63,7 +63,7 @@ describe('catchit', () => {
 
     it('should handle rejected Promise with Error', async () => {
       const testError = new Error('async error')
-      const [ok, error, value] = await catchit(() => Promise.reject(testError))
+      const [ok, error, value] = await to(() => Promise.reject(testError))
       expect(ok).toBe(false)
       expect(error).toBe(testError)
       expect(value).toBeUndefined()
@@ -74,7 +74,7 @@ describe('catchit', () => {
 
       await Promise.all(
         testValues.map(async testValue => {
-          const [ok, error, value] = await catchit(() => Promise.reject(testValue))
+          const [ok, error, value] = await to(() => Promise.reject(testValue))
           expect(ok).toBe(false)
           expect(error).toBe(testValue)
           expect(value).toBeUndefined()
@@ -84,7 +84,7 @@ describe('catchit', () => {
 
     it('should handle async/await rejection', async () => {
       const testError = new Error('async await error')
-      const [ok, error, value] = await catchit(async () => {
+      const [ok, error, value] = await to(async () => {
         throw testError
       })
       expect(ok).toBe(false)
@@ -93,7 +93,7 @@ describe('catchit', () => {
     })
 
     it('should handle nested Promises', async () => {
-      const [ok, error, value] = await catchit(() =>
+      const [ok, error, value] = await to(() =>
         Promise.resolve(Promise.resolve(Promise.resolve('nested')))
       )
       expect(ok).toBe(true)
@@ -105,7 +105,7 @@ describe('catchit', () => {
   // 类型系统验证
   describe('type system', () => {
     it('should infer never type for throwing functions', () => {
-      const [ok, error, value] = catchit(() => {
+      const [ok, error, value] = to(() => {
         throw new Error('this function never returns')
       })
 
@@ -123,7 +123,7 @@ describe('catchit', () => {
         age?: number
       }
 
-      const [ok, error, value] = catchit(
+      const [ok, error, value] = to(
         () =>
           ({
             id: 1,
@@ -143,7 +143,7 @@ describe('catchit', () => {
     })
 
     it('should handle void functions', () => {
-      const [ok, error, value] = catchit(() => {
+      const [ok, error, value] = to(() => {
         console.log('no return')
       })
 
@@ -157,13 +157,13 @@ describe('catchit', () => {
   // 边缘案例
   describe('edge cases', () => {
     it('should handle functions returning null', () => {
-      const [ok, error, value] = catchit(() => null)
+      const [ok, error, value] = to(() => null)
       expect(ok).toBe(true)
       expect(value).toBeNull()
     })
 
     it('should handle async functions returning null', async () => {
-      const [ok, error, value] = await catchit(() => Promise.resolve(null))
+      const [ok, error, value] = await to(() => Promise.resolve(null))
       expect(ok).toBe(true)
       expect(value).toBeNull()
     })
@@ -176,14 +176,14 @@ describe('catchit', () => {
         },
       }
 
-      const [ok, error, value] = catchit(() => context.getValue())
+      const [ok, error, value] = to(() => context.getValue())
       expect(ok).toBe(true)
       expect(value).toBe(42)
     })
 
     it('should handle functions with arguments (curried)', () => {
       const curriedAdd = (a: number) => (b: number) => a + b
-      const [ok, error, value] = catchit(() => curriedAdd(2)(3))
+      const [ok, error, value] = to(() => curriedAdd(2)(3))
       expect(ok).toBe(true)
       expect(value).toBe(5)
     })
