@@ -1,4 +1,4 @@
-type TryRunResult<T> =
+type ToResult<T> =
   | readonly [ok: true, error: undefined, value: T]
   | readonly [ok: false, error: unknown, value: undefined]
 
@@ -9,10 +9,10 @@ type TryRunResult<T> =
  * @returns For synchronous functions: a result tuple
  * @returns For async functions: a Promise that resolves to a result tuple
  */
-export function to<T>(fn: () => never): TryRunResult<never>
-export function to<T>(fn: () => Promise<T>): Promise<TryRunResult<T>>
-export function to<T>(fn: () => T): TryRunResult<T>
-export function to<T>(fn: () => T | Promise<T>): TryRunResult<T> | Promise<TryRunResult<T>> {
+export function to<T>(fn: () => never): ToResult<never>
+export function to<T>(fn: () => Promise<T>): Promise<ToResult<T>>
+export function to<T>(fn: () => T): ToResult<T>
+export function to<T>(fn: () => T | Promise<T>): ToResult<T> | Promise<ToResult<T>> {
   try {
     const result = fn()
 
@@ -26,7 +26,7 @@ function isPromise<T>(value: unknown): value is Promise<T> {
   return value instanceof Promise
 }
 
-function handleAsyncPromise<T>(promise: Promise<T>): Promise<TryRunResult<T>> {
+function handleAsyncPromise<T>(promise: Promise<T>): Promise<ToResult<T>> {
   return promise.then(
     value => [true, undefined, value] as const,
     error => [false, error, undefined] as const
