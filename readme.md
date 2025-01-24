@@ -1,6 +1,6 @@
 # @vikiboss/to
 
-An elegant TypeScript error handling utility library.
+An elegant TypeScript error handling utility library, alternative to [Try Statements](https://github.com/arthurfiorette/proposal-try-statements) proposal.
 
 ## Features
 
