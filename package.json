@@ -1,6 +1,7 @@
 {
   "name": "@vikiboss/to",
   "version": "1.0.0",
+  "packageManager": "pnpm@9.14.4",
   "description": "A TypeScript utility for elegant error handling",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
