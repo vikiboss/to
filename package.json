@@ -13,7 +13,8 @@
     "dev": "tsup --watch",
     "test": "vitest",
     "test:ci": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "release": "bumpp"
   },
   "keywords": [
     "typescript",
